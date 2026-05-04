@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Marcia — Guia de Vendas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0F0F0F;
+            --surface: #1A1A1A;
+            --surface-accent: #252525;
+            --text: #E0E0E0;
+            --muted: #888888;
+            --accent: #D6A495; /* Bronze/Rosa Seco para combinar com o portfólio */
+            --gold: #C5A059;
+            --success: #25D366;
+            --serif: 'Cormorant Garamond', serif;
+            --sans: 'Montserrat', sans-serif;
+            --radius: 16px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: var(--sans);
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding-bottom: 100px; /* Espaço para a navegação inferior */
+        }
+
+        .header {
+            padding: 40px 24px 24px;
+            background: linear-gradient(to bottom, var(--surface), var(--bg));
+            text-align: center;
+        }
+
+        .header h1 {
+            font-family: var(--serif);
+            font-size: 32px;
+            font-weight: 500;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 13px;
+            color: var(--muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        /* ── TABS ── */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            scrollbar-width: none;
+        }
+        .tabs::-webkit-scrollbar { display: none; }
+
+        .tab-btn {
+            background: var(--surface);
+            border: 1px solid var(--surface-accent);
+            color: var(--muted);
+            padding: 10px 20px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: var(--gold);
+            color: var(--bg);
+            border-color: var(--gold);
+            font-weight: 600;
+        }
+
+        /* ── SEÇÕES ── */
+        .section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+        .section.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            font-family: var(--serif);
+            font-size: 24px;
+            margin-bottom: 16px;
+            color: var(--gold);
+        }
+
+        /* ── SCRIPTS ── */
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--surface-accent);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .card-tag {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--gold);
+            background: rgba(197, 160, 89, 0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .script-box {
+            background: var(--bg);
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            color: var(--text);
+            margin-bottom: 16px;
+            white-space: pre-wrap;
+            border: 1px dashed var(--surface-accent);
+        }
+
+        .btn-copy {
+            width: 100%;
+            background: var(--gold);
+            color: var(--bg);
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn-copy:active { transform: scale(0.98); }
+
+        /* ── CHECKLIST ── */
+        .check-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px;
+            background: var(--surface);
+            margin-bottom: 10px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .check-box {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--gold);
+            border-radius: 6px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .check-item.done .check-box {
+            background: var(--gold);
+        }
+
+        .check-item.done .check-box::after {
+            content: '✓';
+            color: var(--bg);
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .check-text { font-size: 14px; color: var(--text); }
+        .check-item.done .check-text { color: var(--muted); text-decoration: line-through; }
+
+        /* ── FOOTER NAV ── */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--surface);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0 24px;
+            border-top: 1px solid var(--surface-accent);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .nav-item.active { color: var(--gold); }
+
+        .nav-icon { font-size: 20px; }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--success);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .toast.show { opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <div id="toast" class="toast">Copiado com sucesso!</div>
+
+    <header class="header">
+        <h1>Guia de Vendas</h1>
+        <p>Marcia — Gestão Digital</p>
+    </header>
+
+    <div class="container">
+        <!-- TABS HIDDEN ON MOBILE (Using Bottom Nav instead) -->
+        
+        <!-- SECTION: SCRIPTS -->
+        <div id="sec-scripts" class="section active">
+            <!-- NOVO: CHECKLIST DA ESPECIALISTA -->
+            <div class="card" style="border: 1px solid var(--gold); margin-bottom: 30px; background: rgba(197, 160, 89, 0.05);">
+                <h3 style="font-family: var(--serif); color: var(--gold); font-size: 18px; text-align: center; margin-bottom: 15px;">🛡️ Checklist de Atendimento</h3>
+                <div style="display: grid; gap: 10px;">
+                    <label style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); cursor: pointer;">
+                        <input type="checkbox" id="chk1" onchange="saveCheck(1)" style="accent-color: var(--gold); width: 18px; height: 18px;"> 
+                        Abordar cliente com Script de Admiração
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); cursor: pointer;">
+                        <input type="checkbox" id="chk2" onchange="saveCheck(2)" style="accent-color: var(--gold); width: 18px; height: 18px;"> 
+                        Enviar Portfólio de Luxo
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); cursor: pointer;">
+                        <input type="checkbox" id="chk3" onchange="saveCheck(3)" style="accent-color: var(--gold); width: 18px; height: 18px;"> 
+                        Enviar Página de Vendas (Preços)
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); cursor: pointer;">
+                        <input type="checkbox" id="chk4" onchange="saveCheck(4)" style="accent-color: var(--gold); width: 18px; height: 18px;"> 
+                        Confirmar Pagamento e Enviar Briefing
+                    </label>
+                </div>
+            </div>
+
+            <h2>Roteiros Poderosos</h2>
+
+            <div class="card" style="border-left: 4px solid var(--gold);">
+                <div class="card-header">
+                    <span class="card-tag">1. Conexão & Admiração (Abordagem Sexy)</span>
+                </div>
+                <div class="script-box" id="script1">"Oii [Nome]! Tudo bem? Estava admirando o seu trabalho por aqui e o nível de entrega que você tem é impecável! ✨ 
+
+Percebi que o seu posicionamento já é de alto nível, mas senti que o seu link de bio ainda não está transmitindo toda a **autoridade e elegância** que o seu serviço merece.
+
+Já imaginou o impacto de ter uma vitrine digital que encanta a sua cliente antes mesmo de ela sentar na sua cadeira? Fiz um modelo de como a sua marca ficaria com esse visual premium. Toparia ver uma demonstração?"</div>
+                <button class="btn-copy" onclick="copyToClipboard('script1')">Copiar Script Magnético</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-tag">2. Fechamento de Autoridade</span>
+                </div>
+                <div class="script-box" id="script_parcela">"Oi Soray! Fico muito feliz que você queira elevar o nível da sua vitrine digital! 💎 
+
+Sobre o investimento, conforme combinamos, conseguimos fazer o valor especial de R$ 697 em até 2x sem juros (ou se preferir, via Pix com prioridade na entrega).
+
+Para darmos esse passo juntas na sua marca, você prefere o link para o cartão ou o Pix?"</div>
+                <button class="btn-copy" onclick="copyToClipboard('script_parcela')">Copiar Script de Fechamento</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-tag">2.1. Termo de Serviço (Contrato)</span>
+                </div>
+                <div class="script-box" id="script_contrato">Soray, para sua segurança e transparência do nosso projeto, aqui está o nosso Termo de Prestação de Serviços Digitais atualizado com o valor de R$ 697. É bem simples e direto, focado na nossa entrega! 📜
+
+Pode visualizar aqui:
+https://v0-mleevitrinesdigitais.vercel.app/contrato.html</div>
+                <button class="btn-copy" onclick="copyToClipboard('script_contrato')">Copiar Script Contrato</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-tag">3. Envio do Briefing (Experiência Prime)</span>
+                </div>
+                <div class="script-box" id="script_link">"Que alegria! Para que a sua nova vitrine fique com a alma da sua marca, preparei um espaço exclusivo para você me contar mais sobre o seu trabalho. ✨
+
+Pode preencher por aqui:
+https://v0-mleevitrinesdigitais.vercel.app/briefing.html
+
+Assim que terminar, eu já recebo tudo aqui e começo a desenhar a sua nova estrutura de autoridade!"</div>
+                <button class="btn-copy" onclick="copyToClipboard('script_link')">Copiar Script Briefing</button>
+            </div>
+
+            <div class="card" style="border-left: 4px solid var(--success);">
+                <div class="card-header">
+                    <span class="card-tag">3.1. Assinatura Digital (GOV.BR)</span>
+                </div>
+                <div class="script-box" id="script_gov">"Com certeza, Soray! Pode ser pelo Gov sim. ✨
+
+Inclusive, eu prefiro! Além de ser super prático, a assinatura digital do Gov traz ainda mais segurança jurídica para nós duas e formaliza o projeto com o profissionalismo que a sua marca merece. 
+
+Pode assinar e me mandar o PDF por aqui mesmo. Assim que receber, já dou o start oficial na sua produção! 💎"</div>
+                <button class="btn-copy" onclick="copyToClipboard('script_gov')">Copiar Script Assinatura Gov</button>
+            </div>
+
+            <!-- NOVO: ROTEIRO VISITA PRESENCIAL -->
+            <div id="sec-reuniao" class="card" style="border: 2px dashed var(--gold); background: rgba(197, 160, 89, 0.05); margin-top: 40px; margin-bottom: 80px;">
+                <div class="card-header">
+                    <span class="card-tag">🔥 ESTRATÉGIA PARA VISITA PRESENCIAL</span>
+                </div>
+                <div class="script-box" style="font-size: 13px;">
+                    <strong>Dica de Ouro:</strong> Comece admirando o espaço físico dela.<br><br>
+                    <strong>1. O Gancho:</strong> "Seu espaço é tão lindo, os detalhes são perfeitos. Mas se eu olhar só pelo seu Instagram, não sinto esse luxo todo. Sabia?"<br><br>
+                    <strong>2. O Show:</strong> Abra o seu celular no Portfólio de Luxo (seu novo link da Vercel) e deixe ela segurar. Não fale nada. Espere ela dizer: "Nossa, que lindo!"<br><br>
+                    <strong>3. A Proposta:</strong> "Eu quero que o seu link de bio seja a extensão desse seu capricho. Quero transformar suas visualizações em agendamentos de alto valor."
+                </div>
+                <p style="font-size: 11px; color: var(--gold); text-align: center; margin-top: 10px;">Respire fundo. Você é a especialista. Ela precisa do seu talento!</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-tag">4. Avaliação de Fotos (Curadoria)</span>
+                </div>
+                <div class="script-box" id="script_fotos">Sobre as fotos de 3 anos atrás: elas podem servir como base, mas como estamos construindo uma Arquitetura de Autoridade para te posicionar como marca premium, o ideal é que reflitam quem você é hoje. 
+
+Se quiser, me manda elas por aqui e eu faço uma 'curadoria de imagem' rápida para ver se elas comunicam o nível de autoridade que seu novo site vai ter! 😉</div>
+                <button class="btn-copy" onclick="copyToClipboard('script_fotos')">Copiar Script de Fotos</button>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid var(--surface-accent); margin: 32px 0;">
+            <h2 id="followup-title">Acompanhamento (Follow-up)</h2>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-tag">Acompanhamento Profissional</span>
+                </div>
+                <div class="script-box" id="follow1">Oi Soraya! Passando apenas para alinhar as informações que trocamos. Ficou com alguma dúvida sobre como o Minisite Vitrine pode ajudar no posicionamento da sua marca hoje? Estou à disposição!</div>
+                <button class="btn-copy" onclick="copyToClipboard('follow1')">Copiar Follow-up 1</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-tag">Gerando Curiosidade</span>
+                </div>
+                <div class="script-box" id="follow2">Soraya, acabei de ver uma referência de design que é a cara do seu negócio! Lembrei de você na hora. Quando tiver um tempinho me avisa para eu te mostrar, acho que vai elevar muito o nível do seu posicionamento.</div>
+                <button class="btn-copy" onclick="copyToClipboard('follow2')">Copiar Follow-up 2</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-tag">Urgência (Fila de Produção)</span>
+                </div>
+                <div class="script-box" id="follow3">Soraya, estou organizando minha agenda de produção para os próximos dias. Como você demonstrou interesse, quero te garantir prioridade para entregarmos seu site o quanto antes. Conseguimos dar o próximo passo hoje?</div>
+                <button class="btn-copy" onclick="copyToClipboard('follow3')">Copiar Follow-up 3</button>
+            </div>
+
+            <hr style="border: 0; border-top: 2px dashed var(--gold); margin: 48px 0; opacity: 0.3;">
+            <h2 id="escala-autoridade">Escala de Autoridade (Scripts Avançados)</h2>
+            <p style="font-size: 13px; color: var(--muted); margin-bottom: 24px;">Roteiros para quando a cliente quer detalhes ou quando você precisa reativar o desejo dela.</p>
+
+            <div class="card" style="border: 1px solid var(--gold); background: rgba(197, 160, 89, 0.05);">
+                <div class="card-header">
+                    <span class="card-tag">A. Como Funciona? (Versão Luxo)</span>
+                </div>
+                <div class="script-box" id="script_como_funciona">"O meu trabalho não é apenas criar um site ou um link de bio. Eu construo uma **Arquitetura de Autoridade**. 
+
+Diferente de um site comum, eu crio um ecossistema visual que comunica o valor do seu serviço antes mesmo de você falar com a cliente. O nosso processo é dividido em 3 pilares:
+
+1️⃣ **Alinhamento Estratégico:** Entendemos quem é sua cliente ideal.
+2️⃣ **Curadoria Estética:** Eu trato suas fotos e organizo sua identidade para que ela transpire luxo e exclusividade.
+3️⃣ **Entrega da Vitrine:** Seu novo posicionamento online, pronto para converter seguidores em clientes de alto ticket. 💎"</div>
+                <button class="btn-copy" onclick="copyToClipboard('script_como_funciona')">Copiar Script "Como Funciona"</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-tag">B. Follow-up Magnético (A Isca)</span>
+                </div>
+                <div class="script-box" id="script_isca">"Oi [Nome]! Tudo bem? Estava aqui analisando umas referências de design internacionais e encontrei um detalhe que é **a cara da sua marca**. ✨ 
+
+Lembrei de você na hora e já imaginei como isso ficaria na sua nova Vitrine. Quando você tiver 5 minutinhos, me avisa? Quero te mostrar essa ideia para elevarmos ainda mais o nível do seu projeto!"</div>
+                <button class="btn-copy" onclick="copyToClipboard('script_isca')">Copiar Follow-up Magnético</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-tag">C. Objeção: "Tá Caro" (Valor vs Preço)</span>
+                </div>
+                <div class="script-box" id="script_objecao">"Eu entendo perfeitamente, [Nome]. O investimento na Arquitetura de Autoridade reflete o nível de clientes que você quer atrair a partir de agora. ✨
+
+Não estamos apenas fazendo um link, estamos mudando a forma como o mercado te enxerga. Quanto custa para você hoje perder uma cliente de alto ticket só porque o seu link atual não passa a confiança necessária? Esse projeto se paga no primeiro contrato que você fechar com esse seu novo posicionamento!"</div>
+                <button class="btn-copy" onclick="copyToClipboard('script_objecao')">Copiar Script Objeção</button>
+            </div>
+        </div>
+
+        <!-- NOVO: GERADOR DE LINKS DE CONTRATO (SMART LINKS) -->
+        <div id="sec-links" class="section" style="padding-bottom: 80px;">
+            <h2>Gerador de Links Inteligentes</h2>
+            <div class="card" style="border: 2px solid var(--gold); background: rgba(197, 160, 89, 0.05);">
+                <p style="font-size: 13px; margin-bottom: 15px;">Use esta ferramenta para criar o link do contrato que já abre com o nome e valor da cliente.</p>
+                
+                <div class="input-group" style="margin-bottom: 15px;">
+                    <label style="font-size: 11px; color: var(--gold); display: block; margin-bottom: 5px;">Nome da Cliente</label>
+                    <input type="text" id="gen_nome" placeholder="Ex: Soray Abbud" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--surface-accent); background: var(--bg); color: #fff;">
+                </div>
+
+                <div class="input-group" style="margin-bottom: 15px;">
+                    <label style="font-size: 11px; color: var(--gold); display: block; margin-bottom: 5px;">Plano/Valor</label>
+                    <select id="gen_plano" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--surface-accent); background: var(--bg); color: #fff;">
+                        <option value="797">Arquitetura Premium (R$ 797)</option>
+                        <option value="497">Vitrine Intermediária (R$ 497)</option>
+                        <option value="297">Vitrine Essencial (R$ 297)</option>
+                    </select>
+                </div>
+
+                <button class="btn-copy" onclick="generateAndCopySmartLink()">Gerar e Copiar Link 🔗</button>
+                <p id="feedback-link" style="font-size: 10px; color: var(--success); text-align: center; margin-top: 10px; display: none;">Link copiado com sucesso!</p>
+            </div>
+        </div>
+
+        <!-- SECTION: BRIEFING -->
+        <div id="sec-briefing" class="section">
+            <h2>Checklist de Entrega</h2>
+            <p style="font-size: 13px; color: var(--muted); margin-bottom: 20px;">Marque conforme for recebendo:</p>
+            
+            <div class="check-item" onclick="toggleCheck(this)">
+                <div class="check-box"></div>
+                <span class="check-text">Logotipo (PNG ou vetor)</span>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+                <div class="check-box"></div>
+                <span class="check-text">Link do WhatsApp do cliente</span>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+                <div class="check-box"></div>
+                <span class="check-text">Fotos dos produtos/serviços</span>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+                <div class="check-box"></div>
+                <span class="check-text">Cores de preferência</span>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+                <div class="check-box"></div>
+                <span class="check-text">Localização (Google Maps/Endereço)</span>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+                <div class="check-box"></div>
+                <span class="check-text">Tabela de Preços (se houver)</span>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+                <div class="check-box"></div>
+                <span class="check-text">Foto da Profissional</span>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+                <div class="check-box"></div>
+                <span class="check-text">Texto "Sobre Mim"</span>
+            </div>
+        </div>
+
+        <!-- SECTION: PAGAMENTO -->
+        <div id="sec-pagamento" class="section">
+            <h2>Gestão de Pagamentos</h2>
+            
+            <div class="card">
+                <div class="card-tag" style="margin-bottom: 12px; display: inline-block;">Minha Chave Pix</div>
+                <div class="script-box" id="pix_key" style="text-align: center; font-size: 20px; font-weight: 600; color: var(--gold);">49999619123</div>
+                <button class="btn-copy" onclick="copyToClipboard('pix_key')">Copiar Chave Pix</button>
+            </div>
+
+            <div class="card">
+                <div class="card-tag" style="margin-bottom: 12px; display: inline-block;">Links Mercado Pago</div>
+                
+                <div style="margin-bottom: 16px;">
+                    <label style="font-size: 11px; color: var(--gold); display: block; margin-bottom: 4px;">Link R$ 297 (Vitrine Essencial)</label>
+                    <div class="script-box" id="link297" style="font-size: 11px; overflow: hidden; text-overflow: ellipsis;">https://mpago.li/SEU_LINK_297</div>
+                    <button class="btn-copy" style="background: var(--surface-accent); color: var(--gold); border: 1px solid var(--gold); margin-bottom: 12px;" onclick="copyToClipboard('link297')">Copiar Link 297</button>
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <label style="font-size: 11px; color: var(--gold); display: block; margin-bottom: 4px;">Link R$ 697 (Condição Especial)</label>
+                    <div class="script-box" id="link697" style="font-size: 11px; overflow: hidden; text-overflow: ellipsis;">https://mpago.li/33A53PG</div>
+                    <button class="btn-copy" style="background: var(--surface-accent); color: var(--gold); border: 1px solid var(--gold); margin-bottom: 12px;" onclick="copyToClipboard('link697')">Copiar Link 697</button>
+                </div>
+
+                <div>
+                    <label style="font-size: 11px; color: var(--gold); display: block; margin-bottom: 4px;">Link R$ 797 (Arquitetura Premium)</label>
+                    <div class="script-box" id="link797" style="font-size: 11px; overflow: hidden; text-overflow: ellipsis;">https://mpago.li/2FVbQe1</div>
+                    <button class="btn-copy" style="background: var(--surface-accent); color: var(--gold); border: 1px solid var(--gold);" onclick="copyToClipboard('link797')">Copiar Link 797</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="font-family: var(--serif); color: var(--gold); margin-bottom: 12px;">Script de Cobrança Premium</h3>
+                <p style="font-size: 13px; color: var(--muted); margin-bottom: 12px;">Copie e envie para fechar agora:</p>
+                <div class="script-box" id="script_pay">✨ *OPÇÕES DE INVESTIMENTO*
+
+Para darmos início ao seu projeto hoje, escolha a melhor opção para você:
+
+🔹 *Opção 1: Pix (À vista)*
+Chave: 49999619123
+
+🔹 *Opção 2: Cartão de Crédito*
+Link Seguro (Em até 3x): [COLE_O_LINK_AQUI]
+
+Assim que realizar o pagamento, me envie o comprovante por aqui para eu te mandar o link do briefing! 🚀</div>
+                <button class="btn-copy" onclick="copyToClipboard('script_pay')">Copiar Script de Cobrança</button>
+            </div>
+        </div>
+    </div>
+
+        <!-- SECTION: PLANOS -->
+        <div id="sec-planos" class="section">
+            <h2>Planos e Detalhes</h2>
+            
+            <div class="card" style="border-left: 4px solid var(--gold);">
+                <div class="card-header">
+                    <span class="card-tag">OPÇÃO 01 — R$ 297</span>
+                </div>
+                <h3 style="font-family: var(--serif); color: var(--gold); margin-bottom: 12px;">Vitrine Essencial</h3>
+                <ul style="font-size: 13px; color: var(--muted); list-style: none; padding-left: 0;">
+                    <li>✓ Design Minimalista Premium</li>
+                    <li>✓ Organização de Links Estratégicos</li>
+                    <li>✓ Botão de WhatsApp em Destaque</li>
+                    <li>✓ Otimizado para Bio do Instagram</li>
+                    <li>✓ Suporte para até 15 produtos</li>
+                </ul>
+            </div>
+
+            <div class="card" style="border: 1px solid var(--gold); background: rgba(197, 160, 89, 0.05); margin-bottom: 20px;">
+                <div class="card-header">
+                    <span class="card-tag">OPÇÃO 02 — R$ 497</span>
+                </div>
+                <h3 style="font-family: var(--serif); color: var(--gold); margin-bottom: 12px;">Vitrine Intermediária</h3>
+                <ul style="font-size: 13px; color: var(--muted); list-style: none; padding-left: 0;">
+                    <li>✓ Tudo do plano Essencial</li>
+                    <li>✓ Design Personalizado</li>
+                    <li>✓ Organização de Catálogo</li>
+                    <li>✓ Suporte Prioritário</li>
+                </ul>
+            </div>
+
+            <div class="card" style="border: 2px solid var(--gold); background: rgba(197, 160, 89, 0.1);">
+                <div class="card-header">
+                    <span class="card-tag" style="background: var(--gold); color: white;">OPÇÃO 03 — R$ 797</span>
+                </div>
+                <h3 style="font-family: var(--serif); color: var(--gold); margin-bottom: 12px;">Arquitetura de Autoridade</h3>
+                <ul style="font-size: 13px; color: var(--muted); list-style: none; padding-left: 0;">
+                    <li>✓ Tudo do plano Intermediário</li>
+                    <li>✓ **Copywriting Persuasivo (Vende por você)**</li>
+                    <li>✓ Estratégia de Posicionamento Premium</li>
+                    <li>✓ Configuração Google Meu Negócio / SEO</li>
+                    <li>✓ Design 100% Exclusivo e Magnético</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- NAVEGAÇÃO INFERIOR -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active" onclick="switchSection('sec-scripts', this)">
+            <span class="nav-icon">💬</span>
+            <span>Scripts</span>
+        </a>
+        <a href="#" class="nav-item" onclick="switchSection('sec-briefing', this)">
+            <span class="nav-icon">📋</span>
+            <span>Briefing</span>
+        </a>
+        <a href="#" class="nav-item" onclick="switchSection('sec-planos', this)">
+            <span class="nav-icon">💎</span>
+            <span>Planos</span>
+        </a>
+        <a href="#" class="nav-item" onclick="switchSection('sec-links', this)">
+            <span class="nav-icon">🔗</span>
+            <span>Links</span>
+        </a>
+        <a href="#" class="nav-item" onclick="switchSection('sec-pagamento', this)">
+            <span class="nav-icon">💰</span>
+            <span>Pagos</span>
+        </a>
+    </nav>
+
+    <script>
+        function switchSection(sectionId, el) {
+            // Esconde todas as seções
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            // Mostra a selecionada
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Atualiza botões da nav
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            el.classList.add('active');
+
+            // Scroll para o topo
+            window.scrollTo(0, 0);
+        }
+
+        function toggleCheck(el) {
+            el.classList.toggle('done');
+        }
+
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast();
+            });
+        }
+
+        function generateAndCopySmartLink() {
+            const nome = encodeURIComponent(document.getElementById('gen_nome').value);
+            const valor = document.getElementById('gen_plano').value;
+            const plano = encodeURIComponent(document.getElementById('gen_plano').options[document.getElementById('gen_plano').selectedIndex].text);
+            
+            // Detecta o endereço do contrato automaticamente (na mesma pasta)
+            const baseURL = window.location.origin + window.location.pathname.replace("guia_vendas.html", "contrato.html");
+            const smartLink = `${baseURL}?nome=${nome}&plano=${plano}&valor=${valor}`;
+            
+            navigator.clipboard.writeText(smartLink).then(() => {
+                const feedback = document.getElementById('feedback-link');
+                feedback.style.display = 'block';
+                setTimeout(() => feedback.style.display = 'none', 3000);
+            });
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        function saveCheck(id) {
+            const chk = document.getElementById('chk' + id).checked;
+            localStorage.setItem('mlee_chk' + id, chk);
+        }
+
+        function loadChecks() {
+            for(let i=1; i<=4; i++) {
+                const val = localStorage.getItem('mlee_chk' + i) === 'true';
+                if(document.getElementById('chk' + i)) document.getElementById('chk' + i).checked = val;
+            }
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadChecks();
+        });
+    </script>
+</body>
+</html>

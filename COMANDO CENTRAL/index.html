@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Marcia — Painel de Controle</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0A0A0A;
+            --surface: #141414;
+            --surface-accent: #1D1D1D;
+            --gold: #C5A059;
+            --text: #F2F2F2;
+            --muted: #A0A0A0;
+            --serif: 'Cormorant Garamond', serif;
+            --sans: 'Montserrat', sans-serif;
+            --radius: 24px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: var(--sans);
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 24px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .header .avatar {
+            width: 80px; height: 80px;
+            background: linear-gradient(135deg, var(--gold), #8A6E3B);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 32px; font-family: var(--serif); color: #000; font-weight: 600;
+            box-shadow: 0 10px 30px rgba(197, 160, 89, 0.3);
+        }
+
+        .header h1 {
+            font-family: var(--serif);
+            font-size: 32px;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 13px;
+            color: var(--muted);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        .grid {
+            width: 100%;
+            max-width: 440px;
+            display: grid;
+            gap: 20px;
+        }
+
+        .hub-card {
+            background: var(--surface);
+            border: 1px solid var(--surface-accent);
+            border-radius: var(--radius);
+            padding: 24px;
+            text-decoration: none;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .hub-card:active { transform: scale(0.96); background: var(--surface-accent); }
+
+        .icon-box {
+            width: 56px; height: 56px;
+            background: rgba(197, 160, 89, 0.1);
+            border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px;
+            color: var(--gold);
+            flex-shrink: 0;
+        }
+
+        .info h3 {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .info p {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.4;
+        }
+
+        .footer {
+            margin-top: auto;
+            padding-top: 60px;
+            text-align: center;
+        }
+
+        .btn-deploy {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            padding: 8px 16px;
+            border-radius: 100px;
+            text-decoration: none;
+            opacity: 0.7;
+        }
+
+        /* DASHBOARD DE GUERRA 5K */
+        .alert-dashboard {
+            width: 100%;
+            max-width: 440px;
+            background: linear-gradient(135deg, #141414, #000);
+            border: 2px solid var(--gold);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin: 0 auto 32px;
+            box-shadow: 0 0 30px rgba(197, 160, 89, 0.15);
+            animation: pulse-border 3s infinite;
+        }
+
+        @keyframes pulse-border {
+            0% { border-color: #8A6E3B; }
+            50% { border-color: var(--gold); }
+            100% { border-color: #8A6E3B; }
+        }
+
+        .alert-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .alert-header h2 { font-family: var(--serif); font-size: 18px; color: var(--gold); letter-spacing: 1px; }
+
+        .progress-container { height: 10px; background: #1D1D1D; border-radius: 100px; overflow: hidden; margin-bottom: 20px; }
+        #progress-bar { height: 100%; width: 0%; background: var(--gold); box-shadow: 0 0 15px var(--gold); transition: width 1s ease-out; }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: center; }
+        .stat-item p { font-size: 10px; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
+        .stat-item span { font-size: 22px; font-family: var(--serif); color: var(--text); font-weight: 600; }
+        .stat-item .price { color: var(--gold); }
+
+        .routine-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .routine-item { background: rgba(255,255,255,0.03); padding: 10px; border-radius: 12px; font-size: 11px; display: flex; align-items: center; gap: 8px; border: 1px solid transparent; }
+        .routine-item.done { border-color: var(--gold); opacity: 0.6; }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="avatar">M</div>
+        <h1>Comando Central</h1>
+        <p>Operação Segunda-feira: Escala de Vendas</p>
+    </header>
+
+    <!-- DASHBOARD DE GUERRA 5K -->
+    <section class="alert-dashboard">
+        <div class="alert-header">
+            <h2>Meta R$ 5.000</h2>
+            <span style="font-size: 12px; color: var(--gold); font-weight: bold;" id="perc-label">0%</span>
+        </div>
+        <div class="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-item" style="border-right: 1px solid rgba(255,255,255,0.1);">
+                <p>Faturamento Atual</p>
+                <span class="price" id="total-revenue">R$ 0</span>
+            </div>
+            <div class="stat-item">
+                <p>Restam para Meta</p>
+                <span id="remaining-value">R$ 5.000</span>
+            </div>
+        </div>
+        <div id="remaining-vendas" style="margin-top: 15px; font-size: 11px; text-align: center; color: var(--muted); font-style: italic; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px;">
+            Carregando inteligência de metas...
+        </div>
+    </section>
+
+    <!-- SEÇÃO: ROTINA DE ALTO IMPACTO (RITMO 5K) -->
+    <div class="grid" style="margin-bottom: 20px;">
+        <div class="hub-card" style="flex-direction: column; align-items: stretch; border: 1px solid var(--gold); background: rgba(197, 160, 89, 0.05);">
+            <h3 style="font-family: var(--serif); color: var(--gold); text-align: center; margin-bottom: 15px;">🔥 Ritmo de 5K (Diário)</h3>
+            <div class="routine-grid">
+                <label class="routine-item" id="label-r1">
+                    <input type="checkbox" id="r1" onchange="saveRoutine(1)"> Instagram 2x
+                </label>
+                <label class="routine-item" id="label-r2">
+                    <input type="checkbox" id="r2" onchange="saveRoutine(2)"> Pinterest 1x
+                </label>
+                <label class="routine-item" id="label-r3">
+                    <input type="checkbox" id="r3" onchange="saveRoutine(3)"> LinkedIn 1x
+                </label>
+                <label class="routine-item" id="label-r4">
+                    <input type="checkbox" id="r4" onchange="saveRoutine(4)"> Fiverr/Contra
+                </label>
+                <label class="routine-item" style="grid-column: span 2; background: var(--gold); color: #000; font-weight: bold;" id="label-r5">
+                    <input type="checkbox" id="r5" onchange="saveRoutine(5)" style="accent-color: black;"> 15 ABORDAGENS (SCRIPTS)
+                </label>
+            </div>
+            <p style="font-size: 10px; color: var(--muted); text-align: center; margin-top: 15px;">Mantenha o ritmo para não deixar a barra esfriar.</p>
+        </div>
+    </div>
+
+
+    <div class="grid">
+        <!-- SEÇÃO: LINKS DE OURO (QUICK ACCESS) -->
+        <div class="hub-card" style="flex-direction: column; align-items: stretch; border: 1px solid var(--gold); background: rgba(197, 160, 89, 0.05);">
+            <h3 style="font-family: var(--serif); color: var(--gold); text-align: center; margin-bottom: 15px;">🚀 Links de Envio Rápido</h3>
+            <div style="display: grid; gap: 10px;">
+                <button onclick="copyToClipboardText('https://mleedigital-eight.vercel.app/')" style="background: var(--surface-accent); color: var(--text); border: 1px solid var(--surface-accent); padding: 10px; border-radius: 12px; font-size: 12px; cursor: pointer; text-align: left; display: flex; justify-content: space-between;">
+                    1. Portfólio de Luxo <span>📋</span>
+                </button>
+                <button onclick="copyToClipboardText('https://v0-mleevitrinesdigitais.vercel.app/')" style="background: var(--surface-accent); color: var(--text); border: 1px solid var(--surface-accent); padding: 10px; border-radius: 12px; font-size: 12px; cursor: pointer; text-align: left; display: flex; justify-content: space-between;">
+                    2. Página de Vendas (Preços) <span>📋</span>
+                </button>
+                <button onclick="copyToClipboardText('Olá! A engenharia da sua nova Vitrine Digital de Alta Conversão está concluída. Estruturei o fluxo focando em Prova Visual e Autoridade Imediata.\n\n🔗 [COLE O LINK AQUI]\n\nApliquei um tratamento editorial nas fotos para padronizar a qualidade e elevar a percepção de luxo da clínica.\n\nPróximo e último passo: Preciso da sua validação técnica. Por favor, acesse a seção de Resultados Reais e confirme se os nomes dos procedimentos estão corretos. Assim que me der o Ok técnico, fazemos a publicação definitiva para o seu Instagram.')" style="background: var(--surface-accent); color: var(--gold); border: 1px dashed var(--gold); padding: 10px; border-radius: 12px; font-size: 12px; cursor: pointer; text-align: left; display: flex; justify-content: space-between;">
+                    3. SCRIPT: Entrega de Projeto <span>📋</span>
+                </button>
+            </div>
+            <p style="font-size: 10px; color: var(--muted); text-align: center; margin-top: 10px;">Clique para copiar e colar no WhatsApp da cliente.</p>
+        </div>
+
+        <!-- LINK 1: PORTFOLIO PROFISSIONAL -->
+        <a href="https://mleedigital-eight.vercel.app/" target="_blank" class="hub-card" style="border-left: 4px solid var(--gold);">
+            <div class="icon-box">✨</div>
+            <div class="info">
+                <h3>Visualizar Portfólio</h3>
+                <p>O seu site de autoridade para encantar a cliente.</p>
+            </div>
+        </a>
+
+        <!-- LINK 2: PÁGINA DE VENDAS -->
+        <a href="https://v0-mleevitrinesdigitais.vercel.app/" target="_blank" class="hub-card" style="border-left: 4px solid #C99363;">
+            <div class="icon-box">💎</div>
+            <div class="info">
+                <h3>Página de Vendas</h3>
+                <p>Onde a cliente escolhe o plano e vê os preços.</p>
+            </div>
+        </a>
+
+        <!-- LINK 3: GUIA DE VENDAS (SCRIPTS) -->
+        <a href="Ferramentas_Gestao/guia_vendas.html" class="hub-card">
+            <div class="icon-box">💰</div>
+            <div class="info">
+                <h3>Scripts & Vendas</h3>
+                <p>O que dizer para fechar com a cliente agora.</p>
+            </div>
+        </a>
+
+        <!-- LINK NOVO: GERADOR DE CONTRATOS -->
+        <a href="Ferramentas_Gestao/contrato.html" class="hub-card" style="border-right: 4px solid var(--gold);">
+            <div class="icon-box">📜</div>
+            <div class="info">
+                <h3>Gerador de Contratos</h3>
+                <p>Crie termos personalizados com instruções Gov.br.</p>
+            </div>
+        </a>
+
+        <!-- LINK 4: VITRINE DE AFILIADOS (ACHADINHOS) -->
+        <a href="Ferramentas_Gestao/achados.html" class="hub-card">
+            <div class="icon-box">🛍️</div>
+            <div class="info">
+                <h3>Sua Vitrine (Afiliada)</h3>
+                <p>Links da Hostinger, Canva e Achados da Amazon.</p>
+            </div>
+        </a>
+
+
+
+
+        <!-- SEÇÃO GESTÃO DE CLIENTES (CRM) -->
+
+        <div class="crm-container" style="margin-top: 40px; padding-bottom: 60px;">
+            
+
+
+
+            <div class="header" style="margin-bottom: 24px;">
+                <h2 style="font-family: var(--serif); color: var(--gold); font-size: 24px;">Gestão de Clientes</h2>
+                <p style="font-size: 11px;">Acompanhamento e Praticidade</p>
+            </div>
+
+            <!-- FORMULÁRIO RÁPIDO -->
+            <div class="hub-card" style="flex-direction: column; align-items: stretch; gap: 12px; background: rgba(197, 160, 89, 0.05); border: 1px dashed var(--gold);">
+                <input type="text" id="crm-name" placeholder="Nome da Cliente" style="background: rgba(0,0,0,0.3); border: 1px solid var(--surface-accent); padding: 12px; border-radius: 12px; color: #fff; font-family: var(--sans);">
+                <input type="tel" id="crm-phone" placeholder="WhatsApp (ex: 49999619123)" style="background: rgba(0,0,0,0.3); border: 1px solid var(--surface-accent); padding: 12px; border-radius: 12px; color: #fff; font-family: var(--sans);">
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <select id="crm-status" style="background: rgba(0,0,0,0.3); border: 1px solid var(--surface-accent); padding: 12px; border-radius: 12px; color: #fff; font-family: var(--sans);">
+                        <option value="lead">💎 Novo Lead</option>
+                        <option value="contrato">📜 Contrato Enviado</option>
+                        <option value="pagamento">💰 Aguard. Pagamento</option>
+                        <option value="briefing">📋 Em Briefing</option>
+                        <option value="producao">🟠 Em Produção</option>
+                        <option value="online">🟢 Site Online</option>
+                        <option value="manutencao">🔴 Pendente Manut.</option>
+                    </select>
+                    <select id="crm-price" style="background: rgba(0,0,0,0.3); border: 1px solid var(--surface-accent); padding: 12px; border-radius: 12px; color: #fff; font-family: var(--sans);">
+                        <option value="297">R$ 297</option>
+                        <option value="497">R$ 497</option>
+                        <option value="797">R$ 797</option>
+                        <option value="0">Outro/Lead</option>
+                    </select>
+                </div>
+
+                <button onclick="addClient()" style="background: var(--gold); color: #000; border: none; padding: 14px; border-radius: 12px; font-weight: 700; cursor: pointer;">Cadastrar Cliente</button>
+            </div>
+
+            <!-- LISTA DE CLIENTES -->
+            <div id="client-list" style="margin-top: 24px; display: grid; gap: 12px;">
+                <!-- Clientes serão inseridas aqui via JS -->
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p style="font-size: 11px; color: var(--muted); margin-bottom: 24px;">© 2026 Inteligência de Gestão Antigravity</p>
+    </footer>
+
+    <script>
+        // LÓGICA DO CRM M.LEE
+        const clientList = document.getElementById('client-list');
+        const messages = {
+            lead: "Oi {name}! Que prazer falar com você. Estava olhando seu perfil e já imaginei uma Vitrine de Autoridade impecável para você. Vamos elevar seu posicionamento? ✨",
+            contrato: "Oi {name}, já gerei seu contrato oficial aqui! Ficou excelente. Segue o link para você visualizar os detalhes e a gente oficializar: [COLE_O_LINK_AQUI]",
+            pagamento: "Oi {name}, passando para confirmar se você conseguiu acessar o link de pagamento. Assim que compensar aqui, eu já libero sua vaga oficial na produção! 🚀",
+            briefing: "Oi {name}, estou passando para te lembrar do preenchimento do briefing! Sem ele não consigo começar a dar vida ao seu projeto. 📋",
+            producao: "Notícia boa, {name}! Seu projeto já entrou oficialmente em produção. Estou cuidando de cada detalhe para que tudo fique impecável.",
+            online: "Parabéns, {name}! Sua Vitrine Digital M.Lee está no ar. Vamos dominar o mercado agora? 🚀✨",
+            manutencao: "Oi {name}, notei uma pendência na manutenção da sua estrutura. Vamos regularizar para manter tudo online e seguro? 🔴"
+        };
+
+        function addClient() {
+            const name = document.getElementById('crm-name').value;
+            const phone = document.getElementById('crm-phone').value;
+            const status = document.getElementById('crm-status').value;
+            const price = parseFloat(document.getElementById('crm-price').value) || 0;
+
+            if (!name || !phone) return alert("Preencha nome e telefone!");
+
+            const client = { id: Date.now(), name, phone, status, price };
+            const clients = JSON.parse(localStorage.getItem('mlee_clients') || '[]');
+            clients.push(client);
+            localStorage.setItem('mlee_clients', JSON.stringify(clients));
+            
+            document.getElementById('crm-name').value = '';
+            document.getElementById('crm-phone').value = '';
+            
+            renderClients();
+            updateDashboard();
+        }
+
+        function updateDashboard() {
+            const clients = JSON.parse(localStorage.getItem('mlee_clients') || '[]');
+            const meta = 5000;
+            
+            // Soma apenas de quem já pagou (status: briefing, producao, online)
+            const paidStatuses = ['briefing', 'producao', 'online'];
+            const total = clients
+                .filter(c => paidStatuses.includes(c.status))
+                .reduce((sum, c) => sum + (c.price || 0), 0);
+
+            const remaining = Math.max(0, meta - total);
+            const perc = Math.min(100, (total / meta) * 100);
+
+            document.getElementById('progress-bar').style.width = perc + '%';
+            document.getElementById('perc-label').innerText = Math.floor(perc) + '%';
+            document.getElementById('total-revenue').innerText = 'R$ ' + total.toLocaleString('pt-BR');
+            document.getElementById('remaining-value').innerText = 'R$ ' + remaining.toLocaleString('pt-BR');
+
+            // Lógica de "Restam X vendas"
+            const v297 = Math.ceil(remaining / 297);
+            const v797 = Math.ceil(remaining / 797);
+            
+            let msg = "";
+            if (remaining <= 0) {
+                msg = "🔥 META BATIDA! Você é imparável! 🚀";
+                document.querySelector('.alert-dashboard').style.borderColor = "#25D366";
+            } else {
+                msg = `Faltam apenas <strong>${v797}</strong> Vitrines Premium ou <strong>${v297}</strong> Essenciais.`;
+            }
+            document.getElementById('remaining-vendas').innerHTML = msg;
+        }
+
+        function renderClients() {
+            const clients = JSON.parse(localStorage.getItem('mlee_clients') || '[]');
+            clientList.innerHTML = '';
+
+            clients.reverse().forEach(client => {
+                const div = document.createElement('div');
+                div.className = 'hub-card';
+                div.style.padding = '16px';
+                div.style.gap = '12px';
+                
+                const msg = messages[client.status].replace('{name}', client.name);
+                const waUrl = `https://wa.me/${client.phone}?text=${encodeURIComponent(msg)}`;
+                const priceLabel = client.price > 0 ? `<span style="color: var(--gold); font-weight: bold; margin-left: auto;">R$ ${client.price}</span>` : '';
+
+                div.innerHTML = `
+                    <div class="icon-box" style="width: 40px; height: 40px; font-size: 16px;">👤</div>
+                    <div class="info" style="flex: 1;">
+                        <h3 style="font-size: 15px; display: flex; align-items: center;">${client.name} ${priceLabel}</h3>
+                        <p style="font-size: 11px;">Status: <span style="color: var(--gold)">${client.status.toUpperCase()}</span></p>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <a href="${waUrl}" target="_blank" style="text-decoration: none; background: #25D366; color: white; padding: 8px; border-radius: 8px; font-size: 14px;">💬</a>
+                        <button onclick="deleteClient(${client.id})" style="background: #ff4444; border: none; padding: 8px; border-radius: 8px; color: white; cursor: pointer;">🗑️</button>
+                    </div>
+                `;
+                clientList.appendChild(div);
+            });
+            updateDashboard();
+        }
+
+        function deleteClient(id) {
+            if(!confirm("Deseja excluir esta cliente?")) return;
+            let clients = JSON.parse(localStorage.getItem('mlee_clients') || '[]');
+            clients = clients.filter(c => c.id !== id);
+            localStorage.setItem('mlee_clients', JSON.stringify(clients));
+            renderClients();
+        }
+
+
+
+        function saveRoutine(id) {
+            const chk = document.getElementById('r' + id).checked;
+            localStorage.setItem('mlee_r' + id, chk);
+            document.getElementById('label-r' + id).classList.toggle('done', chk);
+        }
+
+        function loadRoutine() {
+            for(let i=1; i<=5; i++) {
+                const val = localStorage.getItem('mlee_r' + i) === 'true';
+                const input = document.getElementById('r' + i);
+                if(input) {
+                    input.checked = val;
+                    document.getElementById('label-r' + i).classList.toggle('done', val);
+                }
+            }
+        }
+
+        function copyToClipboardText(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert("Conteúdo copiado com sucesso! ✨");
+                }).catch(() => fallbackCopy(text));
+            } else {
+                fallbackCopy(text);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-999999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                alert("Conteúdo copiado com sucesso! ✨");
+            } catch (err) {
+                alert("Erro ao copiar. Selecione manualmente.");
+            }
+            document.body.removeChild(textArea);
+        }
+
+        // Carregar ao iniciar
+        renderClients();
+
+        loadRoutine();
+    </script>
+</body>
+</html>
+
