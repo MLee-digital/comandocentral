@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Contrato — Marcia Gestão Digital</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #FDFBF8;
+            --surface: #FFFFFF;
+            --surface-accent: #F4F1ED;
+            --text: #4A3E38;
+            --muted: #888888;
+            --gold: #C5A059;
+            --gold-dark: #A68045;
+            --serif: 'Cormorant Garamond', serif;
+            --sans: 'Montserrat', sans-serif;
+            --radius: 20px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--sans);
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* ── CONFIGURADOR ── */
+        .config-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 32px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
+            border: 1px solid var(--surface-accent);
+        }
+
+        .config-card h2 {
+            font-family: var(--serif);
+            font-size: 28px;
+            color: var(--gold);
+            margin-bottom: 24px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--surface-accent);
+            border-radius: 12px;
+            background: var(--bg);
+            font-family: var(--sans);
+            font-size: 15px;
+            color: var(--text);
+        }
+
+        .btn-generate {
+            width: 100%;
+            background: var(--gold);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 100px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-generate:hover { background: var(--gold-dark); transform: translateY(-2px); }
+
+        /* ── O CONTRATO (VIZUALIZAÇÃO) ── */
+        .contract-paper {
+            background: white;
+            padding: 60px 50px;
+            border-radius: 4px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            min-height: 800px;
+            display: none;
+            position: relative;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .contract-header {
+            text-align: center;
+            margin-bottom: 60px;
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 24px;
+        }
+
+        .contract-header h1 {
+            font-family: var(--serif);
+            font-size: 32px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text);
+        }
+
+        .contract-header p {
+            font-size: 12px;
+            color: var(--gold-dark);
+            margin-top: 8px;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+        }
+
+        .clause {
+            margin-bottom: 32px;
+        }
+
+        .clause h3 {
+            font-family: var(--serif);
+            font-size: 18px;
+            color: var(--gold-dark);
+            margin-bottom: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .clause p {
+            font-size: 14px;
+            color: #333;
+            text-align: justify;
+        }
+
+        .signatures {
+            margin-top: 80px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            text-align: center;
+        }
+
+        .sig-line {
+            border-top: 1px solid #333;
+            padding-top: 10px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .print-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #222;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 100px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            z-index: 100;
+        }
+
+        /* ── TUTORIAL GOV ── */
+        .tutorial-card {
+            margin-top: 40px;
+            background: var(--surface-accent);
+            border-radius: var(--radius);
+            padding: 30px;
+            border: 1px dashed var(--gold);
+            display: none;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .tutorial-card h3 {
+            font-family: var(--serif);
+            color: var(--gold-dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .step {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .step-num {
+            background: var(--gold);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .btn-gov {
+            display: inline-block;
+            background: #003064; /* Azul Gov.br */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        @media print {
+            .config-card, .print-btn, .tutorial-card { display: none; }
+            body { padding: 0; background: white; }
+            .contract-paper { box-shadow: none; padding: 40px; }
+            .container { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- CONFIGURADOR -->
+        <div class="config-card">
+            <h2>Personalizar Contrato</h2>
+            <div class="input-group">
+                <label>Nome da Cliente / Empresa</label>
+                <input type="text" id="inputClientName" placeholder="Ex: Soray Abbud" value="Soray Abbud">
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="input-group">
+                    <label>Escolha o Plano</label>
+                    <select id="inputPlan" onchange="updatePrice()">
+                        <option value="Vitrine Essencial">Vitrine Essencial (R$ 297)</option>
+                        <option value="Arquitetura de Autoridade">Arquitetura de Autoridade (R$ 797)</option>
+                        <option value="Condição Especial (R$ 697)" selected>Condição Especial (R$ 697)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Valor da Manutenção</label>
+                    <input type="text" id="inputMaint" value="R$ 49,90">
+                </div>
+            </div>
+
+            <button class="btn-generate" onclick="generateContract()">Gerar Contrato Profissional 💎</button>
+        </div>
+
+        <!-- CONTRATO -->
+        <div class="contract-paper" id="contractPaper">
+            <div class="contract-header">
+                <h1>Instrumento Particular de Prestação de Serviços Digitais</h1>
+                <p>Marcia Gestão Digital & Estratégia</p>
+            </div>
+
+            <div class="clause">
+                <h3>01. DO OBJETO</h3>
+                <p>O presente contrato tem por objeto o desenvolvimento e implementação de uma <strong id="planNameDisplay">Condição Especial (R$ 697)</strong> para a contratante <strong id="clientNameDisplay">Soray Abbud</strong>. O serviço inclui o design, a estruturação de links, a otimização de conversão e a entrega de uma vitrine digital profissional conforme o plano selecionado.</p>
+            </div>
+
+            <div class="clause">
+                <h3>02. DOS VALORES E PAGAMENTO</h3>
+                <p>Pela prestação dos serviços de criação, a CONTRATANTE pagará à CONTRATADA o valor fixo de <strong id="priceDisplay">R$ 697,00</strong>. Adicionalmente, para a manutenção da infraestrutura, suporte técnico e hospedagem, será devida uma taxa de <strong id="maintDisplay">R$ 49,90/mês</strong>, com início 30 dias após a entrega do projeto.</p>
+            </div>
+
+            <div class="clause">
+                <h3>03. DO PRAZO DE ENTREGA</h3>
+                <p>A CONTRATADA compromete-se a entregar a versão final do projeto no prazo de <strong>05 (cinco) dias úteis</strong>, a contar do recebimento integral de todas as informações solicitadas via Briefing (fotos, textos, logos e acessos).</p>
+            </div>
+
+            <div class="clause">
+                <h3>04. DA MANUTENÇÃO E SUPORTE</h3>
+                <p>A taxa de manutenção garante à CONTRATANTE o suporte técnico para ajustes pontuais e a permanência do site online. A falta de pagamento da manutenção por mais de 10 dias poderá resultar na suspensão temporária dos serviços digitais até a regularização.</p>
+            </div>
+
+            <div class="clause">
+                <h3>06. DO ACEITE DIGITAL</h3>
+                <p>Este contrato é um instrumento de adesão. A CONTRATANTE declara sua concordância com todos os termos aqui descritos ao realizar o pagamento da primeira parcela ou valor total do projeto, bem como ao confirmar a contratação via WhatsApp ou e-mail, servindo o comprovante de pagamento como assinatura digital definitiva para todos os fins de direito.</p>
+            </div>
+
+            <p style="font-size: 13px; text-align: center; margin-top: 60px;">
+                Gerado digitalmente em <span id="dateDisplay"></span>
+                <br>
+                <span id="contractID" style="font-size: 10px; color: var(--muted); opacity: 0.5;">ID: #AUTO-GEN</span>
+            </p>
+
+            <div class="signatures">
+                <div>
+                    <div class="sig-line" style="font-size: 10px; color: var(--gold-dark);">ESTA VIA FOI GERADA DIGITALMENTE</div>
+                    <div style="font-size: 14px; font-weight: 600; margin-top: 5px;">Marcia Gestão Digital</div>
+                </div>
+                <div>
+                    <div class="sig-line" style="font-size: 10px; color: var(--gold-dark);">ACEITE FORMALIZADO VIA PAGAMENTO</div>
+                    <div style="font-size: 14px; font-weight: 600; margin-top: 5px;"><span id="clientSigDisplay"></span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NOVO: TUTORIAL DE ASSINATURA -->
+        <div class="tutorial-card" id="tutorialCard">
+            <h3>✒️ Como assinar este contrato?</h3>
+            
+            <div class="step">
+                <div class="step-num">1</div>
+                <div>Salvar este contrato como <strong>PDF</strong> (clique no botão preto "Imprimir/PDF" abaixo).</div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">2</div>
+                <div>Acesse o <strong>Assinador Oficial do Governo</strong> no link abaixo:
+                    <br>
+                    <a href="https://assinador.iti.br" target="_blank" class="btn-gov">Abrir Assinador GOV.BR ↗</a>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">3</div>
+                <div>Faça login com sua conta Gov.br, suba o PDF e posicione sua assinatura.</div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">4</div>
+                <div>Baixe o arquivo assinado e envie de volta para a <strong>Marcia</strong> via WhatsApp.</div>
+            </div>
+
+            <p style="font-size: 12px; color: var(--muted); margin-top: 20px; font-style: italic;">
+                Dica: Este processo é gratuito, seguro e tem validade jurídica total.
+            </p>
+        </div>
+    </div>
+
+    <div style="position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 10px; z-index: 100;">
+        <button class="print-btn" id="linkBtn" style="background: var(--gold); position: static;" onclick="copySmartLink()">Copiar Link para Cliente 🔗</button>
+        <button class="print-btn" id="printBtn" style="display: none; position: static;" onclick="window.print()">Imprimir Contrato (PDF)</button>
+    </div>
+
+    <script>
+        function generateContract(manualPrice) {
+            const client = document.getElementById('inputClientName').value;
+            const plan = document.getElementById('inputPlan').value;
+            const maint = document.getElementById('inputMaint').value;
+            
+            // Map plan to Price
+            let price = manualPrice || "R$ 797,00";
+            if (!manualPrice) {
+                if (plan.includes("297")) price = "R$ 297,00";
+                if (plan.includes("697")) price = "R$ 697,00";
+            }
+
+            document.getElementById('clientNameDisplay').innerText = client;
+            document.getElementById('clientSigDisplay').innerText = client;
+            document.getElementById('planNameDisplay').innerText = plan;
+            document.getElementById('priceDisplay').innerText = price;
+            document.getElementById('maintDisplay').innerText = maint;
+            
+            const today = new Date();
+            document.getElementById('dateDisplay').innerText = today.toLocaleDateString('pt-BR');
+            document.getElementById('contractID').innerText = "ID: #ML-" + Math.random().toString(36).substr(2, 6).toUpperCase();
+
+            document.getElementById('contractPaper').style.display = 'block';
+            document.getElementById('printBtn').style.display = 'block';
+            document.getElementById('tutorialCard').style.display = 'block';
+            
+            // Scroll to contract
+            document.getElementById('contractPaper').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function copySmartLink() {
+            const nome = encodeURIComponent(document.getElementById('inputClientName').value);
+            const plano = encodeURIComponent(document.getElementById('inputPlan').value);
+            const maint = encodeURIComponent(document.getElementById('inputMaint').value);
+            
+            // Captura o valor baseado na lógica do contrato
+            let valorRaw = document.getElementById('priceDisplay').innerText;
+            const valor = encodeURIComponent(valorRaw.replace("R$ ", ""));
+
+            const baseURL = window.location.origin + window.location.pathname;
+            const smartLink = `${baseURL}?nome=${nome}&plano=${plano}&valor=${valor}&manutencao=${maint}`;
+            
+            navigator.clipboard.writeText(smartLink).then(() => {
+                alert("Link Inteligente copiado! Agora é só colar para a cliente.");
+            });
+        }
+
+        window.onload = function() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('nome')) {
+                document.getElementById('inputClientName').value = params.get('nome');
+                const valor = params.get('valor') ? "R$ " + params.get('valor') : null;
+                
+                if (params.get('plano')) document.getElementById('inputPlan').value = params.get('plano');
+                if (params.get('manutencao')) document.getElementById('inputMaint').value = params.get('manutencao');
+                
+                generateContract(valor);
+            }
+        };
+    </script>
+</body>
+</html>
