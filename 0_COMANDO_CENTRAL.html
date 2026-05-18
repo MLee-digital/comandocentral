@@ -298,6 +298,16 @@
     </section>
 
     <div class="grid">
+        <!-- SEÇÃO: FÁBRICA DE CONTEÚDO PREMIUM (NOVO) -->
+        <a href="0_PLANNER_CONTEUDO.html" class="hub-card" style="border: 2px solid var(--gold); background: linear-gradient(135deg, rgba(197, 160, 89, 0.15), rgba(0, 0, 0, 0.4)); box-shadow: 0 0 20px rgba(197, 160, 89, 0.1); grid-column: span 1; text-decoration: none;">
+            <div class="icon-box" style="background: rgba(197, 160, 89, 0.2); font-size: 28px;">📅</div>
+            <div class="info">
+                <h3 style="font-family: var(--serif); color: var(--gold); font-size: 19px; margin-bottom: 2px;">Fábrica de Conteúdo</h3>
+                <p style="color: #fff; font-weight: 500; font-size: 13px; margin-bottom: 2px;">Calendário de Postagens 30 Dias</p>
+                <p style="font-size: 11px; color: var(--muted);">Funil de Vendas completo, legendas de posts prontas e roteiros detalhados de stories 6x ao dia.</p>
+            </div>
+        </a>
+
         <!-- SEÇÃO: BANCO DE IDEIAS DE CONTEÚDO (NOVO) -->
         <div class="hub-card" style="grid-column: span 1; border: 1px solid var(--gold); background: rgba(197, 160, 89, 0.05);">
             <h3 style="font-family: var(--serif); color: var(--gold); margin-bottom: 15px;">💡 Banco de Ideias (Conteúdo)</h3>
@@ -417,6 +427,18 @@
                     </select>
                 </div>
 
+                <!-- Novos Campos: Data de Manutenção & Lembrete (Obs) -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div style="display: flex; flex-direction: column;">
+                        <label style="font-size: 9px; color: var(--gold); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;">📅 Manutenção / Cobrança</label>
+                        <input type="date" id="crm-due" style="background: rgba(0,0,0,0.3); border: 1px solid var(--surface-accent); padding: 12px; border-radius: 12px; color: #fff; font-family: var(--sans); font-size: 11px;">
+                    </div>
+                    <div style="display: flex; flex-direction: column;">
+                        <label style="font-size: 9px; color: var(--gold); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;">✏️ Obs / Lembrete Rápido</label>
+                        <input type="text" id="crm-notes" placeholder="Ex: Cobrar R$ 150/mês" style="background: rgba(0,0,0,0.3); border: 1px solid var(--surface-accent); padding: 12px; border-radius: 12px; color: #fff; font-family: var(--sans); font-size: 11px;">
+                    </div>
+                </div>
+
                 <button onclick="addClient()" style="background: var(--gold); color: #000; border: none; padding: 14px; border-radius: 12px; font-weight: 700; cursor: pointer;">Cadastrar Cliente</button>
             </div>
 
@@ -449,16 +471,20 @@
             const phone = document.getElementById('crm-phone').value;
             const status = document.getElementById('crm-status').value;
             const price = parseFloat(document.getElementById('crm-price').value) || 0;
+            const due = document.getElementById('crm-due').value || '';
+            const notes = document.getElementById('crm-notes').value || '';
 
             if (!name || !phone) return alert("Preencha nome e telefone!");
 
-            const client = { id: Date.now(), name, phone, status, price };
+            const client = { id: Date.now(), name, phone, status, price, due, notes };
             const clients = JSON.parse(localStorage.getItem('mlee_clients') || '[]');
             clients.push(client);
             localStorage.setItem('mlee_clients', JSON.stringify(clients));
             
             document.getElementById('crm-name').value = '';
             document.getElementById('crm-phone').value = '';
+            document.getElementById('crm-due').value = '';
+            document.getElementById('crm-notes').value = '';
             
             renderClients();
             updateDashboard();
@@ -505,41 +531,114 @@
                 div.className = 'hub-card';
                 div.style.padding = '16px';
                 div.style.gap = '12px';
+                div.style.flexDirection = 'column';
+                div.style.alignItems = 'stretch';
                 
                 const msg = messages[client.status].replace('{name}', client.name);
                 const waUrl = `https://wa.me/${client.phone}?text=${encodeURIComponent(msg)}`;
                 const priceLabel = client.price > 0 ? `<span style="color: var(--gold); font-weight: bold; margin-left: auto;">R$ ${client.price}</span>` : '';
 
+                // Formatar data de manutenção
+                let dueHtml = '';
+                let borderHighlight = '';
+                if (client.due) {
+                    const formattedDate = client.due.split('-').reverse().join('/');
+                    
+                    // Checar se o vencimento está próximo ou passou
+                    const dueDateObj = new Date(client.due + 'T23:59:59');
+                    const todayDateObj = new Date();
+                    const diffTime = dueDateObj - todayDateObj;
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    
+                    let badgeBg = 'rgba(255, 159, 67, 0.1)';
+                    let badgeColor = '#ff9f43';
+                    let badgeBorder = 'rgba(255, 159, 67, 0.2)';
+                    
+                    if (diffDays <= 0) {
+                        badgeBg = 'rgba(255, 68, 68, 0.15)';
+                        badgeColor = '#ff4444';
+                        badgeBorder = 'rgba(255, 68, 68, 0.3)';
+                        borderHighlight = 'border: 1px solid rgba(255, 68, 68, 0.5); box-shadow: 0 0 10px rgba(255, 68, 68, 0.1);';
+                    } else if (diffDays <= 5) {
+                        badgeBg = 'rgba(255, 235, 59, 0.1)';
+                        badgeColor = '#fbc02d';
+                        badgeBorder = 'rgba(255, 235, 59, 0.2)';
+                    }
+                    
+                    dueHtml = `
+                        <div style="font-size: 10px; color: ${badgeColor}; background: ${badgeBg}; padding: 4px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px; margin-top: 6px; border: 1px solid ${badgeBorder}; width: fit-content; font-weight: 600;">
+                            📅 Cobrança: ${formattedDate} ${diffDays <= 0 ? '⚠️ (Vencido!)' : `(em ${diffDays} dias)`}
+                        </div>
+                    `;
+                }
+
+                // Formatar notas/observações
+                let notesHtml = '';
+                if (client.notes) {
+                    notesHtml = `
+                        <div style="font-size: 11px; color: var(--muted); margin-top: 8px; background: rgba(255,255,255,0.02); padding: 8px 12px; border-radius: 8px; border-left: 3px solid var(--gold); line-height: 1.4;">
+                            💡 <strong>Nota:</strong> ${client.notes}
+                        </div>
+                    `;
+                }
+
+                if (borderHighlight) {
+                    div.style.cssText += borderHighlight;
+                }
+
                 div.innerHTML = `
-                    <div class="icon-box" style="width: 40px; height: 40px; font-size: 16px;">👤</div>
-                    <div class="info" style="flex: 1;">
-                        <h3 style="font-size: 15px; display: flex; align-items: center;">${client.name} ${priceLabel}</h3>
-                        <div style="margin-top: 6px;">
-                            <select onchange="updateClientStatus(${client.id}, this.value)" style="background: rgba(0,0,0,0.5); border: 1px solid var(--surface-accent); padding: 4px 8px; border-radius: 6px; color: var(--gold); font-size: 10px; cursor: pointer; outline: none;">
-                                <option value="lead" ${client.status === 'lead' ? 'selected' : ''}>💎 Novo Lead</option>
-                                <option value="contrato" ${client.status === 'contrato' ? 'selected' : ''}>📜 Contrato Enviado</option>
-                                <option value="pagamento" ${client.status === 'pagamento' ? 'selected' : ''}>💰 Aguard. Pagamento</option>
-                                <option value="briefing" ${client.status === 'briefing' ? 'selected' : ''}>📋 Em Briefing</option>
-                                <option value="producao" ${client.status === 'producao' ? 'selected' : ''}>🟠 Em Produção</option>
-                                <option value="online" ${client.status === 'online' ? 'selected' : ''}>🟢 Site Online</option>
-                                <option value="manutencao" ${client.status === 'manutencao' ? 'selected' : ''}>🔴 Pendente Manut.</option>
-                            </select>
+                    <div style="display: flex; gap: 12px; align-items: center; width: 100%;">
+                        <div class="icon-box" style="width: 40px; height: 40px; font-size: 16px; margin: 0;">👤</div>
+                        <div class="info" style="flex: 1;">
+                            <h3 style="font-size: 15px; display: flex; align-items: center; margin: 0;">${client.name} ${priceLabel}</h3>
+                            <div style="margin-top: 6px;">
+                                <select onchange="updateClientStatus(${client.id}, this.value)" style="background: rgba(0,0,0,0.5); border: 1px solid var(--surface-accent); padding: 4px 8px; border-radius: 6px; color: var(--gold); font-size: 10px; cursor: pointer; outline: none;">
+                                    <option value="lead" ${client.status === 'lead' ? 'selected' : ''}>💎 Novo Lead</option>
+                                    <option value="contrato" ${client.status === 'contrato' ? 'selected' : ''}>📜 Contrato Enviado</option>
+                                    <option value="pagamento" ${client.status === 'pagamento' ? 'selected' : ''}>💰 Aguard. Pagamento</option>
+                                    <option value="briefing" ${client.status === 'briefing' ? 'selected' : ''}>📋 Em Briefing</option>
+                                    <option value="producao" ${client.status === 'producao' ? 'selected' : ''}>🟠 Em Produção</option>
+                                    <option value="online" ${client.status === 'online' ? 'selected' : ''}>🟢 Site Online</option>
+                                    <option value="manutencao" ${client.status === 'manutencao' ? 'selected' : ''}>🔴 Pendente Manut.</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <a href="${waUrl}" target="_blank" style="text-decoration: none; background: #25D366; color: white; padding: 8px 12px; border-radius: 8px; font-size: 14px; display: flex; align-items: center; justify-content: center; height: 36px; width: 36px;">💬</a>
+                            <button onclick="deleteClient(${client.id}, this)" style="background: #ff4444; border: none; padding: 8px; border-radius: 8px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; height: 36px; width: 36px; transition: all 0.2s ease; font-size: 11px; font-weight: bold; white-space: nowrap;">🗑️</button>
                         </div>
                     </div>
-                    <div style="display: flex; gap: 8px; align-items: center;">
-                        <a href="${waUrl}" target="_blank" style="text-decoration: none; background: #25D366; color: white; padding: 8px; border-radius: 8px; font-size: 14px;">💬</a>
-                        <button onclick="deleteClient(${client.id})" style="background: #ff4444; border: none; padding: 8px; border-radius: 8px; color: white; cursor: pointer;">🗑️</button>
-                    </div>
+                    ${dueHtml}
+                    ${notesHtml}
                 `;
                 clientList.appendChild(div);
             });
             updateDashboard();
         }
 
-        function deleteClient(id) {
-            if(!confirm("Deseja excluir esta cliente?")) return;
+        function deleteClient(id, btnElement) {
+            if (!btnElement.dataset.confirmed) {
+                // Primeira tentativa: mudar estado do botão
+                btnElement.dataset.confirmed = "true";
+                btnElement.style.background = "#ff9f43";
+                btnElement.style.width = "auto";
+                btnElement.style.padding = "8px 12px";
+                btnElement.innerHTML = "⚠️ Excluir?";
+                
+                // Resetar após 3 segundos se não confirmar
+                setTimeout(() => {
+                    btnElement.removeAttribute('data-confirmed');
+                    btnElement.style.background = "#ff4444";
+                    btnElement.style.width = "36px";
+                    btnElement.style.padding = "8px";
+                    btnElement.innerHTML = "🗑️";
+                }, 3000);
+                return;
+            }
+
+            // Segunda tentativa: deletar de verdade
             let clients = JSON.parse(localStorage.getItem('mlee_clients') || '[]');
-            clients = clients.filter(c => c.id !== id);
+            clients = clients.filter(c => c.id != id && String(c.id) !== String(id));
             localStorage.setItem('mlee_clients', JSON.stringify(clients));
             renderClients();
         }
